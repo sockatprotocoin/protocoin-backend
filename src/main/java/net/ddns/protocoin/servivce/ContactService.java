@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ContactService {
-
     private final ContactRepository contactRepository;
 
     private final InvitationRepository invitationRepository;
