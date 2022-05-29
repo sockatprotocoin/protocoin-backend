@@ -10,11 +10,17 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable long id) {
+        return ResponseEntity.ok(userService.getUser(id));
     }
 
     @GetMapping

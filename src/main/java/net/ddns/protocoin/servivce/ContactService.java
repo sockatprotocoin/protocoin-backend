@@ -1,7 +1,7 @@
 package net.ddns.protocoin.servivce;
 
+import net.ddns.protocoin.dto.ContactDTO;
 import net.ddns.protocoin.model.Contact;
-import net.ddns.protocoin.model.User;
 import net.ddns.protocoin.repository.ContactRepository;
 import net.ddns.protocoin.repository.InvitationRepository;
 import org.springframework.http.HttpStatus;
@@ -22,14 +22,16 @@ public class ContactService {
         this.invitationRepository = invitationRepository;
     }
 
-    public List<User> getContactsByUserId(long userId) {
+    public List<ContactDTO> getContactsByUserId(long userId) {
         return contactRepository
                 .findAllByUser1_IdOrUser2_Id(userId, userId)
-                .stream().map(contact ->
-                        contact.getUser2().getId() == userId ?
-                        contact.getUser1() :
-                        contact.getUser2()).collect(Collectors.toList()
-                );
+                .stream()
+                .map(contact -> new ContactDTO(
+                        contact.getId(),
+                        contact.getUser1().getId() == userId ?
+                        contact.getUser2() :
+                        contact.getUser1())
+                ).collect(Collectors.toList());
     }
 
     public Contact acceptInvitationAndCreateContact(long invitationId) {
@@ -43,5 +45,9 @@ public class ContactService {
 
         invitationRepository.delete(invitation);
         return contactRepository.save(contact);
+    }
+
+    public void deleteContact(long id) {
+        contactRepository.deleteById(id);
     }
 }
