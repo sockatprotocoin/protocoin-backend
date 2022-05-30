@@ -1,6 +1,5 @@
 package net.ddns.protocoin.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,13 +17,22 @@ public class User {
 
     private String email;
 
-    @JsonIgnore
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
-    @OneToMany
-    List<Invitation> invitations = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<User> contacts = new ArrayList<>();
+
+    public void addContact(User user){
+        if(!contacts.contains(user)) {
+            contacts.add(user);
+        }
+    }
+
+    public void deleteContact(User user){
+        contacts.remove(user);
+    }
 }

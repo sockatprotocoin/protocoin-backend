@@ -2,19 +2,18 @@ package net.ddns.protocoin.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Data
 public class Invitation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     User user1;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     User user2;
 }
