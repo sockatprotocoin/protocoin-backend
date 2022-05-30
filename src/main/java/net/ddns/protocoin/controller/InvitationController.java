@@ -1,5 +1,7 @@
 package net.ddns.protocoin.controller;
 
+import net.ddns.protocoin.dto.InvitationDTO;
+import net.ddns.protocoin.dto.UserDTO;
 import net.ddns.protocoin.model.Invitation;
 import net.ddns.protocoin.servivce.InvitationService;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,13 @@ public class InvitationController {
     }
 
     @PostMapping
-    public ResponseEntity<Invitation> addInvitation(@RequestBody Invitation invitation) {
+    public ResponseEntity<InvitationDTO> addInvitation(@RequestBody Invitation invitation) {
         return ResponseEntity.ok(invitationService.addInvitation(invitation));
+    }
+
+    @PostMapping("/invite")
+    public ResponseEntity<InvitationDTO> addInvitationByIds(@RequestParam long inviterId, @RequestParam long invitedId) {
+        return ResponseEntity.ok(invitationService.addInvitationByIds(inviterId,invitedId));
     }
 
     @DeleteMapping
@@ -29,13 +36,24 @@ public class InvitationController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInvitationById(@PathVariable long id) {
+        invitationService.deleteInvitationById(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/sent")
-    public ResponseEntity<List<Invitation>> getSentInvitation(@RequestParam long userId) {
+    public ResponseEntity<List<InvitationDTO>> getSentInvitation(@RequestParam long userId) {
         return ResponseEntity.ok(invitationService.getSentInvitations(userId));
     }
 
     @GetMapping("/received")
-    public ResponseEntity<List<Invitation>> getReceivedInvitation(@RequestParam long userId) {
+    public ResponseEntity<List<InvitationDTO>> getReceivedInvitation(@RequestParam long userId) {
         return ResponseEntity.ok(invitationService.getReceivedInvitations(userId));
+    }
+
+    @GetMapping("/accept/{id}")
+    public ResponseEntity<List<UserDTO>> acceptInvitationById(@PathVariable long id) {
+        return ResponseEntity.ok(invitationService.acceptInvitationAndCreateContact(id));
     }
 }

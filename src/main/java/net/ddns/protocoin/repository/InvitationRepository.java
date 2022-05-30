@@ -11,4 +11,5 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> findAllByUser1_id(long senderId);
     List<Invitation> findAllByUser2_id(long receiverId);
     boolean existsByUser1_idAndUser2_id(long senderId, long receiverId);
+
 }
