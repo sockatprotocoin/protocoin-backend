@@ -23,7 +23,7 @@ public class User {
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<User> contacts = new ArrayList<>();
 
     public void addContact(User user){
