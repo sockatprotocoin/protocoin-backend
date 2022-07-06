@@ -1,5 +1,7 @@
 package net.ddns.protocoin.controller;
 
+import net.ddns.protocoin.dto.UserDTO;
+import net.ddns.protocoin.dto.WalletDTO;
 import net.ddns.protocoin.model.User;
 import net.ddns.protocoin.servivce.UserService;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +21,45 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable long id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> addUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.addUser(user));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteUser(User user) {
+    public ResponseEntity<Void> deleteUser(@RequestBody User user) {
         userService.deleteUser(user);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/contacts/{contactId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id, @PathVariable long contactId) {
+        userService.deleteContact(id,contactId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/contacts")
+    public ResponseEntity<List<UserDTO>> getContactsByUserId(@PathVariable long id) {
+        return ResponseEntity.ok(userService.getContactsByUserId(id));
+    }
+
+    @GetMapping("/{id}/wallet")
+    public ResponseEntity<WalletDTO> getWalletByUserId(@PathVariable long id) {
+        return ResponseEntity.ok(userService.getWalletByUserId(id));
     }
 }
