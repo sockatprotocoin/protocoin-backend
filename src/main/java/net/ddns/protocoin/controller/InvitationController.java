@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/invitations")
+@RequestMapping("/invitation")
 @CrossOrigin(origins = "http://localhost:3000")
 public class InvitationController {
     private final InvitationService invitationService;

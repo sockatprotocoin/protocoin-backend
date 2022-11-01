@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private final UserService userService;
@@ -47,13 +47,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/contacts/{contactId}")
+    @DeleteMapping("/{id}/contact/{contactId}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id, @PathVariable long contactId) {
         userService.deleteContact(id,contactId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/contacts")
+    @GetMapping("/{id}/contact")
     public ResponseEntity<List<UserDTO>> getContactsByUserId(@PathVariable long id) {
         return ResponseEntity.ok(userService.getContactsByUserId(id));
     }
