@@ -1,4 +1,4 @@
-package net.ddns.protocoin.servivce;
+package net.ddns.protocoin.service;
 
 import net.ddns.protocoin.core.ecdsa.Curve;
 import net.ddns.protocoin.core.util.Converter;
@@ -8,6 +8,7 @@ import net.ddns.protocoin.dto.WalletDTO;
 import net.ddns.protocoin.model.User;
 import net.ddns.protocoin.model.Wallet;
 import net.ddns.protocoin.repository.UserRepository;
+import net.ddns.protocoin.service.database.UTXOStorage;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UTXOStorage utxoStorage;
     private final Curve curve;
 
-    public UserService(UserRepository userRepository, Curve curve) {
+    public UserService(UserRepository userRepository, UTXOStorage utxoStorage, Curve curve) {
         this.userRepository = userRepository;
+        this.utxoStorage = utxoStorage;
         this.curve = curve;
     }
 
@@ -36,6 +39,17 @@ public class UserService {
 
     public List<UserDTO> getUsers() {
         return userRepository.findAll().stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    public double getBalance(long userId) {
+        var wallet = userRepository.getById(userId).getWallet();
+        var utxos = utxoStorage.getUTXOs(Converter.hexStringToByteArray(wallet.getAddress()));
+        double balance = 0.0;
+        for (var utxo : utxos) {
+            balance += utxo.getAmount().toPtc();
+        }
+
+        return balance;
     }
 
     public UserDTO addUser(User user) {

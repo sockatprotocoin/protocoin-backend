@@ -1,4 +1,4 @@
-package net.ddns.protocoin.servivce;
+package net.ddns.protocoin.service;
 
 import net.ddns.protocoin.communication.connection.socket.Node;
 import net.ddns.protocoin.communication.data.Message;

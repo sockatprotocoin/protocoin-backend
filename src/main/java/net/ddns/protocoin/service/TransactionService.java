@@ -1,4 +1,4 @@
-package net.ddns.protocoin.servivce;
+package net.ddns.protocoin.service;
 
 import net.ddns.protocoin.core.blockchain.transaction.Transaction;
 import net.ddns.protocoin.core.util.Converter;

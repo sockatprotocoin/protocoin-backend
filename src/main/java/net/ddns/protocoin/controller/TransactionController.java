@@ -2,7 +2,7 @@ package net.ddns.protocoin.controller;
 
 import net.ddns.protocoin.dto.TransactionDTO;
 import net.ddns.protocoin.exception.InsufficientBalanceException;
-import net.ddns.protocoin.servivce.TransactionService;
+import net.ddns.protocoin.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

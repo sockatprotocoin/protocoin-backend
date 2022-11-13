@@ -3,7 +3,7 @@ package net.ddns.protocoin.controller;
 import net.ddns.protocoin.dto.InvitationDTO;
 import net.ddns.protocoin.dto.UserDTO;
 import net.ddns.protocoin.model.Invitation;
-import net.ddns.protocoin.servivce.InvitationService;
+import net.ddns.protocoin.service.InvitationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

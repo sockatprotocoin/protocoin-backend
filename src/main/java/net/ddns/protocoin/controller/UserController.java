@@ -3,7 +3,7 @@ package net.ddns.protocoin.controller;
 import net.ddns.protocoin.dto.UserDTO;
 import net.ddns.protocoin.dto.WalletDTO;
 import net.ddns.protocoin.model.User;
-import net.ddns.protocoin.servivce.UserService;
+import net.ddns.protocoin.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +28,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
+    }
+
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<Double> getBalance(@PathVariable long id) {
+        return ResponseEntity.ok(userService.getBalance(id));
     }
 
     @PostMapping

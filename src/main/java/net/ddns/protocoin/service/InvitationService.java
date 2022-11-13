@@ -1,4 +1,4 @@
-package net.ddns.protocoin.servivce;
+package net.ddns.protocoin.service;
 
 import net.ddns.protocoin.dto.InvitationDTO;
 import net.ddns.protocoin.dto.UserDTO;

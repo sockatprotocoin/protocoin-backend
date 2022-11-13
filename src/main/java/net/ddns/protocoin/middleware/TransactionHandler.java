@@ -71,7 +71,7 @@ public class TransactionHandler {
     }
 
     private TransactionOutput createTransactionOutputFromTransactionDTO(TransactionDTO transactionDTO) {
-        var lockingScript = PayToPubKeyHash.fromPublicKey(Converter.hexStringToByteArray(transactionDTO.getWalletAddress()));
+        var lockingScript = PayToPubKeyHash.fromPublicKey(Converter.hexStringToByteArray(transactionDTO.getReceiverWalletAddress()));
         return new TransactionOutput(Satoshi.valueOf(transactionDTO.getAmount()), lockingScript);
     }
 }

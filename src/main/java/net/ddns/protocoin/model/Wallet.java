@@ -11,6 +11,7 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(unique = true)
     private String privateKey;
     private String publicKey;
     private String address;
