@@ -16,6 +16,6 @@ public class BlockchainHandler {
     }
 
     public List<BlockDTO> getBlockchain() {
-        return blockChainService.getBlockchain().getBlockchain().stream().map(BlockDTO::new).collect(Collectors.toList());
+        return blockChainService.getBlockchain().getBlockList().stream().map(BlockDTO::new).collect(Collectors.toList());
     }
 }
