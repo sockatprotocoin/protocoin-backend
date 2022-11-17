@@ -3,10 +3,12 @@ package net.ddns.protocoin.configuration;
 import net.ddns.protocoin.communication.connection.socket.Node;
 import net.ddns.protocoin.core.ecdsa.Curve;
 import net.ddns.protocoin.core.script.ScriptInterpreter;
+import net.ddns.protocoin.event.BlockchainListener;
 import net.ddns.protocoin.eventbus.EventBus;
 import net.ddns.protocoin.service.BlockChainService;
 import net.ddns.protocoin.service.MiningService;
 import net.ddns.protocoin.service.database.UTXOStorage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +23,9 @@ public class BlockchainContextConfiguration {
     private BlockChainService blockChainService;
     private MiningService miningService;
     private Node node;
+
+    @Value("${protocoin.blockchain.path:blockchain}")
+    private String blockchainLocation;
 
     private <T> T instantiate(T t, Supplier<T> creator) {
         if (t == null) {
@@ -50,8 +55,13 @@ public class BlockchainContextConfiguration {
     }
 
     @Bean
-    public BlockChainService blockChainService(UTXOStorage utxoStorage, EventBus eventBus) {
-        return instantiate(blockChainService, () -> new BlockChainService(utxoStorage, eventBus));
+    public BlockChainService blockChainService(UTXOStorage utxoStorage, EventBus eventBus, BlockchainListener blockchainListener) {
+        return instantiate(blockChainService, () -> {
+            var blockchainService = new BlockChainService(utxoStorage, eventBus);
+            blockchainListener.setBlockChainService(blockchainService);
+            eventBus.registerListener(blockchainListener);
+            return blockchainService;
+        });
     }
 
     @Bean
