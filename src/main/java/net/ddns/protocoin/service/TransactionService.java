@@ -1,6 +1,5 @@
 package net.ddns.protocoin.service;
 
-import net.ddns.protocoin.core.blockchain.transaction.Transaction;
 import net.ddns.protocoin.core.util.Converter;
 import net.ddns.protocoin.dto.TransactionDTO;
 import net.ddns.protocoin.exception.InsufficientBalanceException;
@@ -36,10 +35,6 @@ public class TransactionService {
         var utxos = utxoStorage.getUTXOs(Converter.hexStringToByteArray(wallet.getAddress()));
 
         var transaction = transactionHandler.createTransaction(wallet, utxos,  transactionDTOList);
-        sendTransactionToNetwork(transaction);
-    }
-
-    private void sendTransactionToNetwork(Transaction transaction) {
-        nodeService.sendTransaction(transaction);
+        nodeService.handleTransaction(transaction);
     }
 }
