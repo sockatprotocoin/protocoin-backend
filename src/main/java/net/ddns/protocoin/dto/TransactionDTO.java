@@ -1,7 +1,5 @@
 package net.ddns.protocoin.dto;
 
-import net.ddns.protocoin.core.blockchain.transaction.Transaction;
-
 public class TransactionDTO {
     private final String receiverWalletAddress;
     private final double amount;
