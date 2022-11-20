@@ -12,7 +12,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/blockchain")
-@CrossOrigin(origins = "http://localhost:3000")
 public class BlockchainController {
     private final BlockchainHandler blockchainHandler;
 
