@@ -10,6 +10,7 @@ import net.ddns.protocoin.model.Wallet;
 import net.ddns.protocoin.repository.UserRepository;
 import net.ddns.protocoin.service.database.UTXOStorage;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,6 +18,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,11 +26,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final UTXOStorage utxoStorage;
     private final Curve curve;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UTXOStorage utxoStorage, Curve curve) {
+    public UserService(UserRepository userRepository, UTXOStorage utxoStorage, Curve curve, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.utxoStorage = utxoStorage;
         this.curve = curve;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDTO getUser(long id) {
@@ -37,8 +41,32 @@ public class UserService {
         );
     }
 
+    public UserDTO getUser(String username) {
+        return userRepository.findByUsername(username).map(UserDTO::new).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+    }
+
     public List<UserDTO> getUsers() {
         return userRepository.findAll().stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    public List<UserDTO> getUsersFiltered(String stringFilter) {
+        var filteredByUsername = filterUsersAndGetDTOs(
+                user -> user.getUsername().toLowerCase().contains(stringFilter.toLowerCase())
+        );
+        var filteredByEmail = filterUsersAndGetDTOs(
+                user -> user.getEmail().toLowerCase().contains(stringFilter.toLowerCase())
+        );
+
+        return filteredByUsername.size() > filteredByEmail.size() ? filteredByUsername : filteredByEmail;
+    }
+
+    private List<UserDTO> filterUsersAndGetDTOs(Predicate<User> userPredicate) {
+        return userRepository.findAll().stream()
+                .filter(userPredicate)
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
     }
 
     public double getBalance(long userId) {
@@ -53,6 +81,7 @@ public class UserService {
     }
 
     public UserDTO addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         var wallet = new Wallet();
         wallet.setPrivateKey(Converter.byteArrayToHexString(curve.privateKey().toByteArray()));
         var publicKey = curve.publicKey(new BigInteger(1, Converter.hexStringToByteArray(wallet.getPrivateKey())));

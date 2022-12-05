@@ -1,10 +1,12 @@
 package net.ddns.protocoin.controller;
 
+import net.ddns.protocoin.config.MyUserDetails;
 import net.ddns.protocoin.dto.UserDTO;
 import net.ddns.protocoin.dto.WalletDTO;
 import net.ddns.protocoin.model.User;
 import net.ddns.protocoin.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +27,19 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers() {
-        return ResponseEntity.ok(userService.getUsers());
+    public ResponseEntity<List<UserDTO>> getUsers(Authentication authentication, @RequestParam(required = false) String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return ResponseEntity.ok(userService.getUsers());
+        } else {
+            return ResponseEntity.ok(userService.getUsersFiltered(stringFilter));
+        }
     }
 
-    @GetMapping("/{id}/balance")
-    public ResponseEntity<Double> getBalance(@PathVariable long id) {
-        return ResponseEntity.ok(userService.getBalance(id));
+    @GetMapping("/balance")
+    public ResponseEntity<Double> getBalance(Authentication authentication) {
+        return ResponseEntity.ok(userService.getBalance(
+                ((MyUserDetails)authentication.getPrincipal()).getId()
+        ));
     }
 
     @PostMapping
@@ -39,31 +47,25 @@ public class UserController {
         return ResponseEntity.ok(userService.addUser(user));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteUser(@RequestBody User user) {
-        userService.deleteUser(user);
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteUser(Authentication authentication) {
+        userService.deleteUserById(userService.getUser(authentication.getName()).getId());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-        userService.deleteUserById(id);
+    @DeleteMapping("/contact/{contactId}")
+    public ResponseEntity<Void> deleteUser(Authentication authentication, @PathVariable long contactId) {
+        userService.deleteContact(((MyUserDetails)authentication.getPrincipal()).getId(), contactId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/contact/{contactId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable long id, @PathVariable long contactId) {
-        userService.deleteContact(id,contactId);
-        return ResponseEntity.ok().build();
+    @GetMapping("/contact")
+    public ResponseEntity<List<UserDTO>> getContactsByUserId(Authentication authentication) {
+        return ResponseEntity.ok(userService.getContactsByUserId(((MyUserDetails)authentication.getPrincipal()).getId()));
     }
 
-    @GetMapping("/{id}/contact")
-    public ResponseEntity<List<UserDTO>> getContactsByUserId(@PathVariable long id) {
-        return ResponseEntity.ok(userService.getContactsByUserId(id));
-    }
-
-    @GetMapping("/{id}/wallet")
-    public ResponseEntity<WalletDTO> getWalletByUserId(@PathVariable long id) {
-        return ResponseEntity.ok(userService.getWalletByUserId(id));
+    @GetMapping("/wallet")
+    public ResponseEntity<WalletDTO> getWalletByUserId(Authentication authentication) {
+        return ResponseEntity.ok(userService.getWalletByUserId(((MyUserDetails)authentication.getPrincipal()).getId()));
     }
 }

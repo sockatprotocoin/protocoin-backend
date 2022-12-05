@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.module.ResolutionException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +27,8 @@ public class InvitationService {
         this.userRepository = userRepository;
     }
 
-    public InvitationDTO addInvitation(Invitation invitation) {
-        if (invitationRepository.existsByUser1_idAndUser2_id(invitation.getUser1().getId(), invitation.getUser2().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invitation already exists.");
-        }
-        return new InvitationDTO(invitationRepository.save(invitation));
+    public Invitation getInvitation(long invitationId) {
+        return invitationRepository.findById(invitationId).orElseThrow(ResolutionException::new);
     }
 
     public void deleteInvitation(Invitation invitation) {

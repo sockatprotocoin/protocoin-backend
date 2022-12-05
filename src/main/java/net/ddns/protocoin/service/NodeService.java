@@ -52,7 +52,7 @@ public class NodeService {
                 networkStartup();
                 return;
             } catch (IOException e) {
-                logger.info("couldn't find node to connect, creating genesis blockchain and user");
+                logger.info("couldn't find node to connect, searching for local blockchain data");
             }
         }
         var blockchainPath = Path.of(blockchainLocation);
@@ -64,6 +64,7 @@ public class NodeService {
                 logger.info("failed reading blockchain from file (it might be corrupted or invalid)");
             }
         }
+        logger.info("couldn't find local blockchain data, creating genesis blockchain and user");
         genesisRun();
     }
 
