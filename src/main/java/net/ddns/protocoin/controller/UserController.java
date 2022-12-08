@@ -26,6 +26,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
+    @GetMapping("/login")
+    public ResponseEntity<Void> login(Authentication authentication) {
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers(Authentication authentication, @RequestParam(required = false) String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
