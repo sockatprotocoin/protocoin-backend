@@ -46,7 +46,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests()
                 .antMatchers("/h2-console/**")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/blockchain")
+                .antMatchers(HttpMethod.GET, "/blockchain")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/user")
                 .permitAll()
