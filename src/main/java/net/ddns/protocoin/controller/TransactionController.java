@@ -1,8 +1,8 @@
 package net.ddns.protocoin.controller;
 
-import net.ddns.protocoin.config.MyUserDetails;
 import net.ddns.protocoin.dto.TransactionDTO;
 import net.ddns.protocoin.exception.InsufficientBalanceException;
+import net.ddns.protocoin.model.User;
 import net.ddns.protocoin.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -29,7 +29,7 @@ public class TransactionController {
     ) {
         try {
             transactionService.makeTransaction(
-                    ((MyUserDetails)authentication.getPrincipal()).getId(), transactionDTOList
+                    ((User)authentication.getPrincipal()).getId(), transactionDTOList
             );
         } catch (InsufficientBalanceException e) {
             ResponseEntity.badRequest().body(e.getMessage());

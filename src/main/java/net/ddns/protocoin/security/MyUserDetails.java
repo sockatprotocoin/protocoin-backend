@@ -1,4 +1,4 @@
-package net.ddns.protocoin.config;
+package net.ddns.protocoin.security;
 
 import net.ddns.protocoin.model.User;
 import org.springframework.security.core.GrantedAuthority;
