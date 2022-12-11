@@ -23,11 +23,11 @@ import java.util.Collection;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/login")){
-            filterChain.doFilter(request,response);
-        } else{
+        if (request.getServletPath().equals("/login")) {
+            filterChain.doFilter(request, response);
+        } else {
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
                     String token = authorizationHeader.substring("Bearer ".length());
                     Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
@@ -49,13 +49,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
-                }catch(Exception e){
+                } catch (Exception e) {
                     response.setHeader("error", e.getMessage());
                     response.sendError(404);
                 }
-            }
-            else{
-                filterChain.doFilter(request,response);
+            } else {
+                filterChain.doFilter(request, response);
             }
         }
     }

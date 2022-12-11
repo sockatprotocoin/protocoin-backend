@@ -1,5 +1,6 @@
 package net.ddns.protocoin.security.config;
 
+import net.ddns.protocoin.security.UserDetailsServiceImpl;
 import net.ddns.protocoin.security.filter.CustomAuthenticationFilter;
 import net.ddns.protocoin.security.filter.CustomAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
@@ -20,11 +21,10 @@ import static org.springframework.http.HttpMethod.POST;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
     private final UserDetailsService userDetailsService;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public SecurityConfiguration(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = bCryptPasswordEncoder;
     }
@@ -36,18 +36,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers(GET,"/login").permitAll();
-        http.authorizeRequests().antMatchers(POST,"/user").permitAll();
-        http.authorizeRequests().antMatchers(GET,"/blockchain").permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
-
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http.cors();
+        http.authorizeRequests()
+            .antMatchers("/h2-console/**").permitAll()
+            .antMatchers(GET, "/blockchain", "/user/{id:\\d+}").permitAll()
+            .antMatchers(POST, "/login", "/user").permitAll()
+            .antMatchers().permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .csrf()
+            .ignoringAntMatchers("/h2-console/**")
+            .and()
+            .headers().frameOptions().disable()
+            .and()
+            .csrf().disable()
+            .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
+            .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception{

@@ -24,6 +24,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable long id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(required = false) String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
