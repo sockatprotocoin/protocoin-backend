@@ -21,9 +21,6 @@ public class User {
 
     private String password;
 
-    @ManyToMany(fetch=FetchType.EAGER)
-    private List<Role> roles = new ArrayList<>();
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
@@ -40,11 +37,4 @@ public class User {
     public void deleteContact(User user){
         contacts.remove(user);
     }
-
-    public void addRole(Role role){
-        if(!roles.contains(role)){
-            roles.add(role);
-        }
-    }
-
 }

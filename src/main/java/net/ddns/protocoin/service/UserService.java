@@ -5,10 +5,8 @@ import net.ddns.protocoin.core.util.Converter;
 import net.ddns.protocoin.core.util.Hash;
 import net.ddns.protocoin.dto.UserDTO;
 import net.ddns.protocoin.dto.WalletDTO;
-import net.ddns.protocoin.model.Role;
 import net.ddns.protocoin.model.User;
 import net.ddns.protocoin.model.Wallet;
-import net.ddns.protocoin.repository.RoleRepository;
 import net.ddns.protocoin.repository.UserRepository;
 import net.ddns.protocoin.service.database.UTXOStorage;
 import org.springframework.http.HttpStatus;
@@ -26,14 +24,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final UTXOStorage utxoStorage;
     private final Curve curve;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, UTXOStorage utxoStorage, Curve curve, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UTXOStorage utxoStorage, Curve curve, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.utxoStorage = utxoStorage;
         this.curve = curve;
         this.passwordEncoder = passwordEncoder;
@@ -132,13 +128,5 @@ public class UserService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with id: " + id);
         }
-    }
-
-    public void addRoleToUser(String username, String roleName){
-        /*
-        User user =userRepository.findByUsername(username).orElseThrow(null);
-        Role role = roleRepository.findByName(roleName).orElseThrow(null);
-        user.addRole(role);
-        userRepository.save(user);*/
     }
 }
