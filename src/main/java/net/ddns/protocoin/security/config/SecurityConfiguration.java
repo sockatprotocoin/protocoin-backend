@@ -15,8 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
             .antMatchers("/h2-console/**").permitAll()
+            .antMatchers(OPTIONS, "/**").permitAll()
             .antMatchers(GET, "/blockchain", "/user/{id:\\d+}").permitAll()
             .antMatchers(POST, "/login", "/user").permitAll()
             .antMatchers().permitAll()

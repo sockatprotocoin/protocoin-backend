@@ -96,7 +96,7 @@ public class NodeService {
     }
 
     private UserDTO createGenesisUser() {
-        var username = "Genesis User";
+        var username = "GenesisUser";
         var email = "genesis.user@protocoin.ddns.net";
         var password = "supersecret";
         var userToCreate = new User();
