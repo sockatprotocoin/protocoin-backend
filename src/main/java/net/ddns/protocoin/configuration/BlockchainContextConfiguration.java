@@ -8,6 +8,7 @@ import net.ddns.protocoin.eventbus.EventBus;
 import net.ddns.protocoin.service.BlockChainService;
 import net.ddns.protocoin.service.MiningService;
 import net.ddns.protocoin.service.database.UTXOStorage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,9 @@ public class BlockchainContextConfiguration {
     private BlockChainService blockChainService;
     private MiningService miningService;
     private Node node;
+
+    @Value("${protocoin.port}")
+    private int port;
 
     private <T> T instantiate(T t, Supplier<T> creator) {
         if (t == null) {
@@ -67,6 +71,6 @@ public class BlockchainContextConfiguration {
 
     @Bean
     public Node getNode(MiningService miningService, EventBus eventBus) {
-        return instantiate(node, () -> new Node(miningService, eventBus));
+        return instantiate(node, () -> new Node(miningService, eventBus, port));
     }
 }
