@@ -98,7 +98,7 @@ public class TransactionService {
         if (walletOptional.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new TransactionRecord(transactionOutput.getAmount().toBigInteger(), userRepository.findByWallet(walletOptional.get())));
+        return Optional.of(new TransactionRecord(transactionOutput.getAmount().toPtc(), userRepository.findByWallet(walletOptional.get())));
     }
 
     public void makeTransaction(long idUser, List<MakeTransactionDTO> makeTransactionDTOList) throws InsufficientBalanceException {
