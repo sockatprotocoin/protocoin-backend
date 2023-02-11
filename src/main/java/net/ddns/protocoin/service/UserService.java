@@ -46,26 +46,37 @@ public class UserService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
     }
+    public List<UserDTO> getUsersNotInContact(long userId) {
+        var contacts = getContactsByUserId(userId).stream().map(UserDTO::getUsername).collect(Collectors.toList());
+
+        return  userRepository.findAll().stream().map(UserDTO::new)
+                .filter(u -> !contacts.contains(u.getUsername()) && !(u.getId() == userId))
+                .collect(Collectors.toList());
+    }
+
 
     public List<UserDTO> getUsers() {
         return userRepository.findAll().stream().map(UserDTO::new).collect(Collectors.toList());
     }
 
-    public List<UserDTO> getUsersFiltered(String stringFilter) {
-        var filteredByUsername = filterUsersAndGetDTOs(
-                user -> user.getUsername().toLowerCase().contains(stringFilter.toLowerCase())
-        );
-        var filteredByEmail = filterUsersAndGetDTOs(
-                user -> user.getEmail().toLowerCase().contains(stringFilter.toLowerCase())
-        );
+    public List<UserDTO> getUsersNotInContactFiltered(String stringFilter, long userId) {
+        return getUsersFiltered(stringFilter, getUsersNotInContact(userId));
+    }
+
+    public List<UserDTO> getUsersFiltered(String stringFilter, List<UserDTO> users) {
+    var filteredByUsername = filterUsers(
+            user -> user.getUsername().toLowerCase().contains(stringFilter.toLowerCase()), users
+    );
+    var filteredByEmail = filterUsers(
+            user -> user.getEmail().toLowerCase().contains(stringFilter.toLowerCase()), users
+    );
 
         return filteredByUsername.size() > filteredByEmail.size() ? filteredByUsername : filteredByEmail;
     }
 
-    private List<UserDTO> filterUsersAndGetDTOs(Predicate<User> userPredicate) {
-        return userRepository.findAll().stream()
+    private List<UserDTO> filterUsers(Predicate<UserDTO> userPredicate, List<UserDTO> users) {
+        return users.stream()
                 .filter(userPredicate)
-                .map(UserDTO::new)
                 .collect(Collectors.toList());
     }
 

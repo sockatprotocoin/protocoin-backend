@@ -26,12 +26,13 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(required = false) String stringFilter) {
+    @GetMapping("/usersNotInContact")
+    public ResponseEntity<List<UserDTO>> getUsersNotInContact(Authentication authentication, @RequestParam(required = false) String stringFilter) {
+        var userId = ((User)authentication.getPrincipal()).getId();
         if (stringFilter == null || stringFilter.isEmpty()) {
-            return ResponseEntity.ok(userService.getUsers());
+            return ResponseEntity.ok(userService.getUsersNotInContact(userId));
         } else {
-            return ResponseEntity.ok(userService.getUsersFiltered(stringFilter));
+            return ResponseEntity.ok(userService.getUsersNotInContactFiltered(stringFilter, userId));
         }
     }
 
