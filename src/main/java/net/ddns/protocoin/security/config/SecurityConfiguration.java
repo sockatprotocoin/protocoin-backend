@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers(OPTIONS, "/**").permitAll()
-            .antMatchers(GET, "/blockchain", "/user/{id:\\d+}").permitAll()
+            .antMatchers(GET, "/blockchain", "/user/{id:\\d+}", "/network").permitAll()
             .antMatchers(POST, "/login", "/user").permitAll()
             .antMatchers().permitAll()
             .anyRequest().authenticated()

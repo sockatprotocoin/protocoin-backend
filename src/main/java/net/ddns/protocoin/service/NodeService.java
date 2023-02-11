@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @Service
 public class NodeService {
@@ -31,9 +32,6 @@ public class NodeService {
 
     @Value("${protocoin.node:}")
     private String host;
-
-    @Value("${protocoin.port}")
-    private int port;
 
     @Value("${protocoin.blockchain.path:blockchain}")
     private String blockchainLocation;
@@ -47,7 +45,8 @@ public class NodeService {
 
     @PostConstruct
     private void setup() {
-        if (!host.isEmpty() && 65536 > port && port > 0) {
+        node.startListening();
+        if (!host.isEmpty()) {
             try {
                 networkStartup();
                 return;
@@ -70,7 +69,7 @@ public class NodeService {
 
     private void networkStartup() throws IOException {
         logger.info("connecting to network");
-        node.connectToNode(new InetSocketAddress(host, port));
+        node.connectToNode(new InetSocketAddress(host, node.getPort()));
         logger.info("retrieving blockchain update from network");
         requestBlockchain();
     }
@@ -125,5 +124,9 @@ public class NodeService {
         } else {
             miningService.registerNewTransaction(transaction);
         }
+    }
+
+    public List<InetSocketAddress> getNodesAddresses() {
+        return node.getNodesAddresses();
     }
 }

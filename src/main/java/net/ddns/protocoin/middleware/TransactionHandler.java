@@ -9,7 +9,7 @@ import net.ddns.protocoin.core.blockchain.transaction.signature.ScriptSignature;
 import net.ddns.protocoin.core.ecdsa.Curve;
 import net.ddns.protocoin.core.util.Converter;
 import net.ddns.protocoin.core.util.Hash;
-import net.ddns.protocoin.dto.TransactionDTO;
+import net.ddns.protocoin.dto.MakeTransactionDTO;
 import net.ddns.protocoin.exception.InsufficientBalanceException;
 import net.ddns.protocoin.model.Wallet;
 import org.springframework.stereotype.Component;
@@ -27,12 +27,12 @@ public class TransactionHandler {
         this.curve = curve;
     }
 
-    public Transaction createTransaction(Wallet wallet, List<TransactionOutput> utxos, List<TransactionDTO> transactionDTOList) throws InsufficientBalanceException {
+    public Transaction createTransaction(Wallet wallet, List<TransactionOutput> utxos, List<MakeTransactionDTO> makeTransactionDTOList) throws InsufficientBalanceException {
         var transactionOutputs = new ArrayList<TransactionOutput>();
         double totalAmount = 0;
-        for (TransactionDTO transactionDTO : transactionDTOList) {
-            totalAmount += transactionDTO.getAmount();
-            transactionOutputs.add(createTransactionOutputFromTransactionDTO(transactionDTO));
+        for (MakeTransactionDTO makeTransactionDTO : makeTransactionDTOList) {
+            totalAmount += makeTransactionDTO.getAmount();
+            transactionOutputs.add(createTransactionOutputFromTransactionDTO(makeTransactionDTO));
         }
 
         var transactionInputs = new ArrayList<TransactionInput>();
@@ -71,8 +71,8 @@ public class TransactionHandler {
         );
     }
 
-    private TransactionOutput createTransactionOutputFromTransactionDTO(TransactionDTO transactionDTO) {
-        var lockingScript = PayToPubKeyHash.fromPubKeyHash(Converter.hexStringToByteArray(transactionDTO.getReceiverWalletAddress()));
-        return new TransactionOutput(Satoshi.valueOf(transactionDTO.getAmount()), lockingScript);
+    private TransactionOutput createTransactionOutputFromTransactionDTO(MakeTransactionDTO makeTransactionDTO) {
+        var lockingScript = PayToPubKeyHash.fromPubKeyHash(Converter.hexStringToByteArray(makeTransactionDTO.getReceiverWalletAddress()));
+        return new TransactionOutput(Satoshi.valueOf(makeTransactionDTO.getAmount()), lockingScript);
     }
 }
