@@ -29,7 +29,7 @@ public class TransactionController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> newTransaction(
+    public ResponseEntity<String> newTransaction(
             Authentication authentication,
             @RequestBody List<MakeTransactionDTO> makeTransactionDTOList
     ) {
@@ -38,7 +38,7 @@ public class TransactionController {
                     ((User)authentication.getPrincipal()).getId(), makeTransactionDTOList
             );
         } catch (InsufficientBalanceException e) {
-            ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
